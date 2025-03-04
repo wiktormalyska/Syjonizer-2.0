@@ -1,0 +1,26 @@
+.sidebar-hide {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 320px;
+    height: 100vh;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transform: translateX(300px);
+    div {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+}
+
+.sidebar-hide:hover {
+    transform: translateX(0px);
+
+    div {
+        opacity: 1;
+    }
+}
+
+.main-sidebar-hide {
+    width: 100%;
+}
