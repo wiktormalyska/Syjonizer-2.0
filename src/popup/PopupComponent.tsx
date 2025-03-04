@@ -8,6 +8,7 @@ import { InitCssInjection } from '../functions/InitCssInjection.tsx';
 export const PopupComponent = () => {
   const [isHidden, setIsHidden] = useState<boolean>(true);
 
+  //Data Loading from local storage
   useEffect(() => {
     chrome.storage.local.get('isHidden', (data) => {
       if (data.isHidden === "true") { /* empty */ } else {
@@ -22,10 +23,6 @@ export const PopupComponent = () => {
       setIsHidden(value);
     });
   };
-
-  if (isHidden === null) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className={'w-64 h-max flex flex-col bg-neutral-100 items-center pt-5 pb-5'}>
