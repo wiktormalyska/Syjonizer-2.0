@@ -6,5 +6,16 @@
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": []
+  "icons": {
+    "16": "icons/logo-16.png",
+    "48": "icons/logo-48.png",
+    "128": "icons/logo-128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "backgroundWorker.js"
+  }
 }
