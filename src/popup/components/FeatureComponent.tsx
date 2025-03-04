@@ -26,9 +26,9 @@ export const FeatureComponent = ({name, onChange, initValue}: FeatureComponentPr
                 type="checkbox"
                 checked={isChecked}
                 onChange={handleCheckboxChange}
-                className="mr-2"
+                className="checkbox w-4 h-4 mr-2"
             />
-            <span>{name}</span>
+            <span className={"text-xs font-medium"}>{name}</span>
         </div>
     );
 };
