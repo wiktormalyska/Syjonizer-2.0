@@ -2,7 +2,7 @@ chrome.runtime.onInstalled.addListener(() => {
     console.log('Syjonizer 2.0 Uruchomiony')
 })
 
-chrome.runtime.onMessage.addListener((message, sender) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("Otrzymano akcję:", message.action)
 
     switch (message.action) {
@@ -15,8 +15,25 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             break
 
         case 'initCssInjection':
-            initInjectCSS(sender.tab.id)
-            break
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                if (!tabs[0] || !tabs[0].id) return;
+
+                chrome.scripting.insertCSS({
+                    target: {tabId: tabs[0].id},
+                    files: ["customStyles.css"]
+                }).catch(err => console.error("Błąd w insertCSS:", err))
+
+                chrome.scripting.executeScript({
+                    target: {tabId: tabs[0].id},
+                    func: checkAndHideSidebar
+                }).catch(err => console.error("Błąd w executeScript:", err))
+
+                chrome.scripting.executeScript({
+                    target: {tabId: tabs[0].id},
+                    func: checkAndTurnAlternativeStyle
+                }).catch(err => console.error("Błąd w insertCSS:", err))
+            });
+            break;
 
         case 'alternativeStyleOn':
             executeScript(alternativeStyleOn)
@@ -26,7 +43,11 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             executeScript(alternativeStyleOff)
             break
     }
+
+    sendResponse({status: "ok"})
+    return true
 })
+
 
 function executeScript(func) {
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
@@ -34,10 +55,11 @@ function executeScript(func) {
 
         chrome.scripting.executeScript({
             target: {tabId: tabs[0].id},
-            func: func,
+            func: func
         }).catch(err => console.error("Błąd w executeScript:", err))
     })
 }
+
 
 function initInjectCSS(tabId) {
     if (!tabId) return
