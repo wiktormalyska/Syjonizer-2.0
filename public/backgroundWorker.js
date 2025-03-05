@@ -15,7 +15,15 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             break
 
         case 'initCssInjection':
-            injectCSS(sender.tab.id)
+            initInjectCSS(sender.tab.id)
+            break
+
+        case 'alternativeStyleOn':
+            executeScript(alternativeStyleOn)
+            break
+
+        case 'alternativeStyleOff':
+            executeScript(alternativeStyleOff)
             break
     }
 })
@@ -31,7 +39,7 @@ function executeScript(func) {
     })
 }
 
-function injectCSS(tabId) {
+function initInjectCSS(tabId) {
     if (!tabId) return
 
     chrome.scripting.insertCSS({
@@ -43,22 +51,29 @@ function injectCSS(tabId) {
         target: {tabId: tabId},
         func: checkAndHideSidebar
     }).catch(err => console.error("Błąd w executeScript:", err))
+
+    chrome.scripting.executeScript({
+        target: {tabId: tabId},
+        func: checkAndTurnAlternativeStyle
+    }).catch(err => console.error("Błąd w insertCSS:", err))
 }
 
 function checkAndHideSidebar() {
     chrome.storage.local.get("isHidden", (data) => {
         if (data.isHidden === "true") {
             console.log("Sidebar jest schowany, ukrywam...")
-            const sidebar = document.getElementById('side');
-            if (sidebar) {
-                sidebar.classList.add("sidebar-hide");
-            }
-            const main = document.getElementById('main');
-            if (main) {
-                main.classList.add("main-sidebar-hide");
-            }
+            executeScript(hideSidebarOn)
         }
     });
+}
+
+function checkAndTurnAlternativeStyle() {
+    chrome.storage.local.get("isAlternativeStyle", (data) => {
+        if (data.isAlternativeStyle === "true") {
+            console.log("Alternatywny styl jest włączony")
+            executeScript(alternativeStyleOn)
+        }
+    })
 }
 
 
@@ -81,5 +96,27 @@ function hideSidebarOff() {
     const main = document.getElementById('main')
     if (main) {
         main.classList.remove("main-sidebar-hide")
+    }
+}
+
+function alternativeStyleOn() {
+    const activityBlocks = document.getElementsByClassName("activity_block")
+    if (activityBlocks.length <= 0) {
+        return
+    }
+    for (let i = 0; i < activityBlocks.length; i++) {
+        const activityBlock = activityBlocks[i]
+        activityBlock.classList.add("alternative-style-activity-block")
+    }
+}
+
+function alternativeStyleOff() {
+    const activityBlocks = document.getElementsByClassName("activity_block")
+    if (activityBlocks.length <= 0) {
+        return
+    }
+    for (let i = 0; i < activityBlocks.length; i++) {
+        const activityBlock = activityBlocks[i]
+        activityBlock.classList.remove("alternative-style-activity-block")
     }
 }
