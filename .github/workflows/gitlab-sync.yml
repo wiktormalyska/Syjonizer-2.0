@@ -19,7 +19,7 @@ jobs:
       - name: Setup SSH and Push to GitLab
         env:
           GITLAB_HOST: git.skni.umcs.pl
-          GITLAB_REPO: git@git.skni.umcs.pl:2274/SKNI/syjonizer-2.0.git
+          GITLAB_REPO: git@git.skni.umcs.pl:SKNI/syjonizer-2.0.git
           SSH_PRIVATE_KEY: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
