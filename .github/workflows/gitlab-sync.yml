@@ -25,6 +25,17 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          
+          # Debug: Check if the key is added
+          echo "Checking private key permissions:"
+          ls -l ~/.ssh/id_rsa
+
           ssh-keyscan $GITLAB_HOST >> ~/.ssh/known_hosts
+          
+          # Debug: Check the known_hosts file
+          echo "Known Hosts:"
+          cat ~/.ssh/known_hosts
+
+          # Add the GitLab remote and push
           git remote add gitlab $GITLAB_REPO
           git push --force gitlab master
