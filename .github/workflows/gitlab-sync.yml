@@ -30,12 +30,17 @@ jobs:
           echo "Checking private key permissions:"
           ls -l ~/.ssh/id_rsa
 
+          # Ensure known_hosts file is clear and then add GitLab key
+          rm -f ~/.ssh/known_hosts
           ssh-keyscan $GITLAB_HOST >> ~/.ssh/known_hosts
           
           # Debug: Check the known_hosts file
           echo "Known Hosts:"
           cat ~/.ssh/known_hosts
 
+          # Remove existing git remote if it exists
+          git remote remove gitlab || true
+          
           # Add the GitLab remote and push
           git remote add gitlab $GITLAB_REPO
           git push --force gitlab master
