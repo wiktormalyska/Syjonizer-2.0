@@ -16,22 +16,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         case 'initCssInjection':
             chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-                if (!tabs[0] || !tabs[0].id) return;
-
-                chrome.scripting.insertCSS({
-                    target: {tabId: tabs[0].id},
-                    files: ["customStyles.css"]
-                }).catch(err => console.error("Błąd w insertCSS:", err))
-
-                chrome.scripting.executeScript({
-                    target: {tabId: tabs[0].id},
-                    func: checkAndHideSidebar
-                }).catch(err => console.error("Błąd w executeScript:", err))
-
-                chrome.scripting.executeScript({
-                    target: {tabId: tabs[0].id},
-                    func: checkAndTurnAlternativeStyle
-                }).catch(err => console.error("Błąd w insertCSS:", err))
+                initInjectCSS(tabs[0].id)
             });
             break;
 
@@ -69,33 +54,32 @@ function initInjectCSS(tabId) {
         files: ["customStyles.css"]
     }).catch(err => console.error("Błąd w insertCSS:", err))
 
-    chrome.scripting.executeScript({
-        target: {tabId: tabId},
-        func: checkAndHideSidebar
-    }).catch(err => console.error("Błąd w executeScript:", err))
-
-    chrome.scripting.executeScript({
-        target: {tabId: tabId},
-        func: checkAndTurnAlternativeStyle
-    }).catch(err => console.error("Błąd w insertCSS:", err))
+    checkAndHideSidebar(tabId);
+    checkAndTurnAlternativeStyle(tabId);
 }
 
-function checkAndHideSidebar() {
+function checkAndHideSidebar(tabId) {
     chrome.storage.local.get("isHidden", (data) => {
         if (data.isHidden === "true") {
-            console.log("Sidebar jest schowany, ukrywam...")
-            executeScript(hideSidebarOn)
+            console.log("Sidebar jest schowany, ukrywam...");
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                func: hideSidebarOn
+            }).catch(err => console.error("Błąd w executeScript:", err));
         }
     });
 }
 
-function checkAndTurnAlternativeStyle() {
+function checkAndTurnAlternativeStyle(tabId) {
     chrome.storage.local.get("isAlternativeStyle", (data) => {
         if (data.isAlternativeStyle === "true") {
-            console.log("Alternatywny styl jest włączony")
-            executeScript(alternativeStyleOn)
+            console.log("Alternatywny styl jest włączony");
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                func: alternativeStyleOn
+            }).catch(err => console.error("Błąd w executeScript:", err));
         }
-    })
+    });
 }
 
 
