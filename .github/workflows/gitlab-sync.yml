@@ -1,4 +1,4 @@
-name: Sync to GitLab
+name: Sync to GitLab via Access Token
 
 on:
   push:
@@ -16,31 +16,16 @@ jobs:
         run: |
           git fetch --unshallow
 
-      - name: Setup SSH and Push to GitLab
+      - name: Setup GitLab Access Token and Push to GitLab
         env:
-          GITLAB_HOST: git.skni.umcs.pl
-          GITLAB_REPO: git@git.skni.umcs.pl:SKNI/syjonizer-2.0.git
-          SSH_PRIVATE_KEY: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
+          GITLAB_REPO: https://gitlab-ci-token:${{ secrets.GITLAB_ACCESS_TOKEN }}@git.skni.umcs.pl/SKNI/syjonizer-2.0.git
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          
-          # Debug: Check if the key is added
-          echo "Checking private key permissions:"
-          ls -l ~/.ssh/id_rsa
+          # Konfiguracja użytkownika (opcjonalnie, jeśli chcesz podać dane użytkownika)
+          git config --global user.name "YGithub"
+          git config --global user.email "your-email@example.com"
 
-          # Ensure known_hosts file is clear and then add GitLab key
-          rm -f ~/.ssh/known_hosts
-          ssh-keyscan $GITLAB_HOST >> ~/.ssh/known_hosts
-          
-          # Debug: Check the known_hosts file
-          echo "Known Hosts:"
-          cat ~/.ssh/known_hosts
+          # Dodaj GitLab remote z HTTPS i tokenem
+          git remote set-url origin $GITLAB_REPO
 
-          # Remove existing git remote if it exists
-          git remote remove gitlab || true
-          
-          # Add the GitLab remote and push
-          git remote add gitlab $GITLAB_REPO
-          git push --force gitlab master
+          # Push do GitLab
+          git push --force origin master
