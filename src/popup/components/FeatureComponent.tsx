@@ -26,7 +26,7 @@ export const FeatureComponent = ({name, onChange, initValue}: FeatureComponentPr
                 type="checkbox"
                 checked={isChecked}
                 onChange={handleCheckboxChange}
-                className="checkbox w-4 h-4 mr-2"
+                className="peer checkbox w-4 h-4 mr-2 accent-background bg-background peer-checked:bg-background"
             />
             <span className={"text-xs font-medium"}>{name}</span>
         </div>
