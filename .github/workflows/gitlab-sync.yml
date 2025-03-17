@@ -1,0 +1,30 @@
+name: Sync to GitLab
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  push_to_gitlab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch full history
+        run: |
+          git fetch --unshallow
+
+      - name: Setup SSH and Push to GitLab
+        env:
+          GITLAB_HOST: git.skni.umcs.pl/
+          GITLAB_REPO: git@git.skni.umcs.pl:2274/SKNI/syjonizer-2.0.git
+          SSH_PRIVATE_KEY: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan $GITLAB_HOST >> ~/.ssh/known_hosts
+          git remote add gitlab $GITLAB_REPO
+          git push --force gitlab master
