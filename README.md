@@ -1,6 +1,5 @@
 ![logo.png](assets/logo.png)
 ### Remaster Syjonizera do Morii UMCS
-
 ## Wtyczka do chrome dodająca nowe funkcjonalności do strony [moria.umcs.pl](http://moria.umcs.lublin.pl/)
 
 ## Funkcjonalności:
