@@ -158,11 +158,6 @@ function weekendHiddenOn() {
     saturday.classList.add("weekend-day-hidden")
     sunday.classList.add("weekend-day-hidden")
 
-    const verticalDividers = document.getElementsByClassName("planvline")
-    for (let i = 6; i < 8; i++) {
-        verticalDividers[i].classList.add("weekend-day-hidden")
-    }
-
     const weekdayEntries = weekDaysContainerHeader.getElementsByClassName("weekdayentry")
     for (let i = 0; i < 5; i++) {
         const entry = weekdayEntries[i]
@@ -172,6 +167,11 @@ function weekendHiddenOn() {
         }
     }
 
+    const verticalDividers = document.getElementsByClassName("planvline")
+    for (let i = 6; i < 8; i++) {
+        verticalDividers[i].classList.add("weekend-day-hidden")
+    }
+
     for (let i = 0; i < 6; i++) {
         verticalDividers[i].style = ""
         verticalDividers[i].style.left = (i * 20) + "%";
@@ -179,7 +179,14 @@ function weekendHiddenOn() {
 
     const activityBlocks = document.getElementsByClassName("activity_block")
     for (let i = 0; i < activityBlocks.length; i++) {
-        //TODO: Dodać edycje stylu
+        const element = activityBlocks[i]
+        const leftStyle = parseFloat(element.style.left)
+        const widthStyle = parseFloat(element.style.width)
+
+        if (leftStyle !== 0) {
+            element.style.left = (leftStyle + 2.8571) + "%"
+        }
+        element.style.width = (widthStyle + 2.8571) + '%';
     }
 }
 
@@ -192,4 +199,37 @@ function weekendHiddenOff() {
 
     saturday.classList.remove("weekend-day-hidden")
     sunday.classList.remove("weekend-day-hidden")
+
+    const weekdayEntries = weekDaysContainerHeader.getElementsByClassName("weekdayentry")
+    for (let i = 0; i < 5; i++) {
+        const entry = weekdayEntries[i]
+        if (entry) {
+            entry.style.left = (i * 14.2857) + "%"
+            entry.style.width = "14.2857%"
+        }
+    }
+
+    const verticalDividers = document.getElementsByClassName("planvline")
+    for (let i = 6; i < 8; i++) {
+        verticalDividers[i].classList.remove("weekend-day-hidden")
+    }
+
+    for (let i = 0; i < 6; i++) {
+        verticalDividers[i].style = ""
+        verticalDividers[i].style.left = (i * 14.2857) + "%";
+    }
+
+    const activityBlocks = document.getElementsByClassName("activity_block")
+    for (let i = 0; i < activityBlocks.length; i++) {
+        const element = activityBlocks[i]
+        const leftStyle = parseFloat(element.style.left)
+        const widthStyle = parseFloat(element.style.width)
+
+        if (leftStyle !== 0) {
+            element.style.left = (leftStyle - 2.8571) + "%"
+        }
+        element.style.width = (widthStyle - 2.8571) + "%";
+    }
 }
+
+//TODO: naprawic rozszerzenia na otwarcie popupa
