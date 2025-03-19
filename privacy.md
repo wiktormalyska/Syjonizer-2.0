@@ -26,6 +26,6 @@ Masz prawo do:
 - Usunięcia swoich danych.
 - Wycofania zgody na zbieranie danych.
 
-Jeśli masz pytania dotyczące polityki prywatności lub chcesz wycofać zgodę, skontaktuj się z nami pod adresem [email@example.com].
+Jeśli masz pytania dotyczące polityki prywatności lub chcesz wycofać zgodę, skontaktuj się z nami pod adresem [wiktormalyska03@gmail.com].
 
 ---

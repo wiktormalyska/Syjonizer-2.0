@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Syjonizer 2.0",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Remaster Syjonizera do Morii UMCS",
   "action": {
     "default_popup": "index-prod.html"
@@ -14,7 +14,6 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "tabs",
     "storage"
   ],
   "host_permissions": [

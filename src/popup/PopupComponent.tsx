@@ -2,7 +2,6 @@ import {BlockComponent} from './components/BlockComponent.tsx';
 import {FeatureComponent} from './components/FeatureComponent.tsx';
 import {AutoHideSidebar} from '../functions/AutoHideSidebar.tsx';
 import {useEffect, useState} from 'react';
-import {InitCssInjection} from '../functions/InitCssInjection.tsx';
 import {PopupBody} from "./components/PopupBody.tsx";
 import storage from "../helpers/storage.tsx";
 import {AlternativeStyle} from "../functions/AlternativeStyle.tsx";
@@ -26,7 +25,6 @@ export const PopupComponent = () => {
                 setIsAlternativeStyle(false);
             }
         })
-        InitCssInjection();
     }, []);
 
     const handleIsHiddenCheckboxChange = (value: boolean) => {
