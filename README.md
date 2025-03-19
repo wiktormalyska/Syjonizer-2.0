@@ -1,4 +1,4 @@
-![logo.png](assets/logo.png)
+![](https://github.com/wiktormalyska/Syjonizer-2.0/blob/master/assets/logo.png?raw=true)
 ### Remaster Syjonizera do Morii UMCS
 ## Wtyczka do chrome dodająca nowe funkcjonalności do strony [moria.umcs.pl](http://moria.umcs.lublin.pl/)
 
