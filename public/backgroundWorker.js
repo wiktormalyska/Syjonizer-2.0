@@ -43,14 +43,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 
 function executeScript(func) {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        if (!tabs[0] || !tabs[0].id) return
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs[0];
+        if (!tab || !tab.id) return;
 
         chrome.scripting.executeScript({
-            target: {tabId: tabs[0].id},
+            target: { tabId: tab.id },
             func: func
-        }).catch(err => console.error("Błąd w executeScript:", err))
-    })
+        }).catch(err => console.error("Błąd w executeScript:", err));
+    });
 }
 
 
@@ -178,15 +179,26 @@ function weekendHiddenOn() {
     }
 
     const activityBlocks = document.getElementsByClassName("activity_block")
-    for (let i = 0; i < activityBlocks.length; i++) {
-        const element = activityBlocks[i]
-        const leftStyle = parseFloat(element.style.left)
-        const widthStyle = parseFloat(element.style.width)
+    const sevenDayColumnWidth = 14.2857; // 100% / 7
+    const fiveDayColumnWidth = 20;      // 100% / 5
+    const ratio = fiveDayColumnWidth / sevenDayColumnWidth;
 
-        if (leftStyle !== 0) {
-            element.style.left = (leftStyle + 2.8571) + "%"
+    for (let i = 0; i < activityBlocks.length; i++) {
+        const element = activityBlocks[i];
+
+        // Only process elements with style properties
+        if (element.style.left && element.style.width) {
+            const leftStyle = parseFloat(element.style.left);
+            const widthStyle = parseFloat(element.style.width);
+
+            // Convert position: multiply by ratio to maintain relative position
+            if (leftStyle !== 0) {
+                element.style.left = (leftStyle * ratio) + "%";
+            }
+
+            // Convert width: multiply by ratio to maintain proportional width
+            element.style.width = (widthStyle * ratio) + "%";
         }
-        element.style.width = (widthStyle + 2.8571) + '%';
     }
 }
 
@@ -220,15 +232,27 @@ function weekendHiddenOff() {
     }
 
     const activityBlocks = document.getElementsByClassName("activity_block")
-    for (let i = 0; i < activityBlocks.length; i++) {
-        const element = activityBlocks[i]
-        const leftStyle = parseFloat(element.style.left)
-        const widthStyle = parseFloat(element.style.width)
 
-        if (leftStyle !== 0) {
-            element.style.left = (leftStyle - 2.8571) + "%"
+    const sevenDayColumnWidth = 14.2857; // 100% / 7
+    const fiveDayColumnWidth = 20;      // 100% / 5
+    const ratio = sevenDayColumnWidth / fiveDayColumnWidth;
+
+    for (let i = 0; i < activityBlocks.length; i++) {
+        const element = activityBlocks[i];
+
+        // Only process elements with style properties
+        if (element.style.left && element.style.width) {
+            const leftStyle = parseFloat(element.style.left);
+            const widthStyle = parseFloat(element.style.width);
+
+            // Convert position back
+            if (leftStyle !== 0) {
+                element.style.left = (leftStyle * ratio) + "%";
+            }
+
+            // Convert width back
+            element.style.width = (widthStyle * ratio) + "%";
         }
-        element.style.width = (widthStyle - 2.8571) + "%";
     }
 }
 

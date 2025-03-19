@@ -8,52 +8,70 @@ import {AlternativeStyle} from "../functions/AlternativeStyle.tsx";
 import {HideWeekendDays} from "../functions/HideWeekendDays.tsx";
 
 export const PopupComponent = () => {
-    const [isSidebarHidden, setIsSidebarHidden] = useState<boolean>(true);
-    const [isAlternativeStyle, setIsAlternativeStyle] = useState<boolean>(true);
-    const [isWeekendHidden, setIsWeekendHidden] = useState<boolean>(true);
+    const [isSidebarHidden, setIsSidebarHidden] = useState<boolean | null>(null);
+    const [isAlternativeStyle, setIsAlternativeStyle] = useState<boolean | null>(null);
+    const [isWeekendHidden, setIsWeekendHidden] = useState<boolean | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    //Data Loading from local storage
+    // Ładowanie danych z localStorage
     useEffect(() => {
         storage.get('isSidebarHidden', (data) => {
-            if (data.isSidebarHidden === "true") { /* empty */
+            if (data.isSidebarHidden === "true") {
+                setIsSidebarHidden(true);
             } else {
                 setIsSidebarHidden(false);
             }
         });
 
         storage.get('isAlternativeStyle', (data) => {
-            if (data.isAlternativeStyle === "true") { /* empty */
+            if (data.isAlternativeStyle === "true") {
+                setIsAlternativeStyle(true);
             } else {
                 setIsAlternativeStyle(false);
             }
-        })
+        });
 
         storage.get('isWeekendHidden', (data) => {
-            if (data.isWeekendHidden === "true") { /* empty */
+            if (data.isWeekendHidden === "true") {
+                setIsWeekendHidden(true);
             } else {
                 setIsWeekendHidden(false);
             }
-        })
+        });
+
+        setIsLoading(false); // Po załadowaniu ustawiamy loading na false
     }, []);
 
     const handleIsSidebarHiddenCheckboxChange = (value: boolean) => {
-        storage.set({isSidebarHidden: value ? 'true' : 'false'}, () => {
-            setIsSidebarHidden(value);
-        });
+        if (isSidebarHidden !== null) {
+            storage.set({ isSidebarHidden: value ? 'true' : 'false' }, () => {
+                setIsSidebarHidden(value);
+                AutoHideSidebar(value)
+            });
+        }
     };
 
     const handleAlternativeStyleCheckboxChange = (value: boolean) => {
-        storage.set({isAlternativeStyle: value ? 'true' : 'false'}, () => {
-            setIsAlternativeStyle(value);
-        });
+        if (isAlternativeStyle !== null) {
+            storage.set({ isAlternativeStyle: value ? 'true' : 'false' }, () => {
+                setIsAlternativeStyle(value);
+                AlternativeStyle(value)
+            });
+        }
     };
 
     const handleIsWeekendHiddenCheckboxChange = (value: boolean) => {
-        storage.set({isWeekendHidden: value ? 'true' : 'false'}, () => {
-            setIsWeekendHidden(value);
-        })
-    }
+        if (isWeekendHidden !== null) {
+            storage.set({ isWeekendHidden: value ? 'true' : 'false' }, () => {
+                setIsWeekendHidden(value);
+                HideWeekendDays(value);
+            });
+        }
+    };
 
+    if (isLoading) {
+        return <div>Loading...</div>; // Możesz dodać wskaźnik ładowania
+    }
 
     return (
         <PopupBody>
@@ -61,21 +79,18 @@ export const PopupComponent = () => {
                 <FeatureComponent
                     name={'Automatyczne ukrywanie paska'}
                     onChange={handleIsSidebarHiddenCheckboxChange}
-                    initValue={isSidebarHidden}
+                    initValue={isSidebarHidden ?? false}
                 />
-                <AutoHideSidebar isHidden={isSidebarHidden}/>
                 <FeatureComponent
                     name={'Alternatywny wygląd kostek'}
                     onChange={handleAlternativeStyleCheckboxChange}
-                    initValue={isAlternativeStyle}
+                    initValue={isAlternativeStyle ?? false}
                 />
-                <AlternativeStyle isAlternativeStyle={isAlternativeStyle}/>
                 <FeatureComponent
                     name={'Ukrywanie soboty i niedzieli'}
                     onChange={handleIsWeekendHiddenCheckboxChange}
-                    initValue={isWeekendHidden}
-                    />
-                <HideWeekendDays isHidden={isWeekendHidden}/>
+                    initValue={isWeekendHidden ?? false}
+                />
             </BlockComponent>
         </PopupBody>
     );
