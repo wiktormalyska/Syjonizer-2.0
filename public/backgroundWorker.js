@@ -27,6 +27,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         case 'alternativeStyleOff':
             executeScript(alternativeStyleOff)
             break
+
+        case 'hideWeekendDaysOn':
+            executeScript(weekendHiddenOn)
+            break
+
+        case 'hideWeekendDaysOff':
+            executeScript(weekendHiddenOff)
+            break
     }
 
     sendResponse({status: "ok"})
@@ -35,14 +43,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 
 function executeScript(func) {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        if (!tabs[0] || !tabs[0].id) return
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs[0];
+        if (!tab || !tab.id) return;
 
         chrome.scripting.executeScript({
-            target: {tabId: tabs[0].id},
+            target: { tabId: tab.id },
             func: func
-        }).catch(err => console.error("Błąd w executeScript:", err))
-    })
+        }).catch(err => console.error("Błąd w executeScript:", err));
+    });
 }
 
 
@@ -56,14 +65,15 @@ function initInjectCSS(tabId) {
 
     checkAndHideSidebar(tabId);
     checkAndTurnAlternativeStyle(tabId);
+    checkAndTurnHideWeekend(tabId);
 }
 
 function checkAndHideSidebar(tabId) {
-    chrome.storage.local.get("isHidden", (data) => {
-        if (data.isHidden === "true") {
+    chrome.storage.local.get("isSidebarHidden", (data) => {
+        if (data.isSidebarHidden === "true") {
             console.log("Sidebar jest schowany, ukrywam...");
             chrome.scripting.executeScript({
-                target: { tabId: tabId },
+                target: {tabId: tabId},
                 func: hideSidebarOn
             }).catch(err => console.error("Błąd w executeScript:", err));
         }
@@ -75,11 +85,23 @@ function checkAndTurnAlternativeStyle(tabId) {
         if (data.isAlternativeStyle === "true") {
             console.log("Alternatywny styl jest włączony");
             chrome.scripting.executeScript({
-                target: { tabId: tabId },
+                target: {tabId: tabId},
                 func: alternativeStyleOn
             }).catch(err => console.error("Błąd w executeScript:", err));
         }
     });
+}
+
+function checkAndTurnHideWeekend(tabId) {
+    chrome.storage.local.get("isWeekendHidden", (data) => {
+        if (data.isWeekendHidden === "true") {
+            console.log("Weekend jest ukryty")
+            chrome.scripting.executeScript({
+                target: {tabId: tabId},
+                func: weekendHiddenOn
+            }).catch(err => console.error("Błąd w executeScript:", err));
+        }
+    })
 }
 
 
@@ -126,3 +148,112 @@ function alternativeStyleOff() {
         activityBlock.classList.remove("alternative-style-activity-block")
     }
 }
+
+function weekendHiddenOn() {
+    const weekDaysContainerHeader = document.getElementsByClassName("weekdayscontainer")[0]
+    if (!weekDaysContainerHeader) return
+
+    const saturday = weekDaysContainerHeader.children[5]
+    const sunday = weekDaysContainerHeader.children[6]
+
+    saturday.classList.add("weekend-day-hidden")
+    sunday.classList.add("weekend-day-hidden")
+
+    const weekdayEntries = weekDaysContainerHeader.getElementsByClassName("weekdayentry")
+    for (let i = 0; i < 5; i++) {
+        const entry = weekdayEntries[i]
+        if (entry) {
+            entry.style.left = (i * 20) + "%"
+            entry.style.width = "20%"  // Each weekday gets 20% width (100% / 5)
+        }
+    }
+
+    const verticalDividers = document.getElementsByClassName("planvline")
+    for (let i = 6; i < 8; i++) {
+        verticalDividers[i].classList.add("weekend-day-hidden")
+    }
+
+    for (let i = 0; i < 6; i++) {
+        verticalDividers[i].style = ""
+        verticalDividers[i].style.left = (i * 20) + "%";
+    }
+
+    const activityBlocks = document.getElementsByClassName("activity_block")
+    const sevenDayColumnWidth = 14.2857; // 100% / 7
+    const fiveDayColumnWidth = 20;      // 100% / 5
+    const ratio = fiveDayColumnWidth / sevenDayColumnWidth;
+
+    for (let i = 0; i < activityBlocks.length; i++) {
+        const element = activityBlocks[i];
+
+        // Only process elements with style properties
+        if (element.style.left && element.style.width) {
+            const leftStyle = parseFloat(element.style.left);
+            const widthStyle = parseFloat(element.style.width);
+
+            // Convert position: multiply by ratio to maintain relative position
+            if (leftStyle !== 0) {
+                element.style.left = (leftStyle * ratio) + "%";
+            }
+
+            // Convert width: multiply by ratio to maintain proportional width
+            element.style.width = (widthStyle * ratio) + "%";
+        }
+    }
+}
+
+function weekendHiddenOff() {
+    const weekDaysContainerHeader = document.getElementsByClassName("weekdayscontainer")[0]
+    if (!weekDaysContainerHeader) return
+
+    const saturday = weekDaysContainerHeader.children[5]
+    const sunday = weekDaysContainerHeader.children[6]
+
+    saturday.classList.remove("weekend-day-hidden")
+    sunday.classList.remove("weekend-day-hidden")
+
+    const weekdayEntries = weekDaysContainerHeader.getElementsByClassName("weekdayentry")
+    for (let i = 0; i < 5; i++) {
+        const entry = weekdayEntries[i]
+        if (entry) {
+            entry.style.left = (i * 14.2857) + "%"
+            entry.style.width = "14.2857%"
+        }
+    }
+
+    const verticalDividers = document.getElementsByClassName("planvline")
+    for (let i = 6; i < 8; i++) {
+        verticalDividers[i].classList.remove("weekend-day-hidden")
+    }
+
+    for (let i = 0; i < 6; i++) {
+        verticalDividers[i].style = ""
+        verticalDividers[i].style.left = (i * 14.2857) + "%";
+    }
+
+    const activityBlocks = document.getElementsByClassName("activity_block")
+
+    const sevenDayColumnWidth = 14.2857; // 100% / 7
+    const fiveDayColumnWidth = 20;      // 100% / 5
+    const ratio = sevenDayColumnWidth / fiveDayColumnWidth;
+
+    for (let i = 0; i < activityBlocks.length; i++) {
+        const element = activityBlocks[i];
+
+        // Only process elements with style properties
+        if (element.style.left && element.style.width) {
+            const leftStyle = parseFloat(element.style.left);
+            const widthStyle = parseFloat(element.style.width);
+
+            // Convert position back
+            if (leftStyle !== 0) {
+                element.style.left = (leftStyle * ratio) + "%";
+            }
+
+            // Convert width back
+            element.style.width = (widthStyle * ratio) + "%";
+        }
+    }
+}
+
+//TODO: naprawic rozszerzenia na otwarcie popupa
