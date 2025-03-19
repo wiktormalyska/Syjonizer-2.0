@@ -25,6 +25,5 @@ export const AutoHideSidebar = ({isHidden}: AutoHideSidebarProps) => {
         }
     }, [isHidden]);
 
-
     return null;
 }

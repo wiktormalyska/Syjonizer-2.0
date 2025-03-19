@@ -5,17 +5,19 @@ import {useEffect, useState} from 'react';
 import {PopupBody} from "./components/PopupBody.tsx";
 import storage from "../helpers/storage.tsx";
 import {AlternativeStyle} from "../functions/AlternativeStyle.tsx";
+import {HideWeekendDays} from "../functions/HideWeekendDays.tsx";
 
 export const PopupComponent = () => {
-    const [isHidden, setIsHidden] = useState<boolean>(true);
+    const [isSidebarHidden, setIsSidebarHidden] = useState<boolean>(true);
     const [isAlternativeStyle, setIsAlternativeStyle] = useState<boolean>(true);
+    const [isWeekendHidden, setIsWeekendHidden] = useState<boolean>(true);
 
     //Data Loading from local storage
     useEffect(() => {
-        storage.get('isHidden', (data) => {
-            if (data.isHidden === "true") { /* empty */
+        storage.get('isSidebarHidden', (data) => {
+            if (data.isSidebarHidden === "true") { /* empty */
             } else {
-                setIsHidden(false);
+                setIsSidebarHidden(false);
             }
         });
 
@@ -25,11 +27,18 @@ export const PopupComponent = () => {
                 setIsAlternativeStyle(false);
             }
         })
+
+        storage.get('isWeekendHidden', (data) => {
+            if (data.isWeekendHidden === "true") { /* empty */
+            } else {
+                setIsWeekendHidden(false);
+            }
+        })
     }, []);
 
-    const handleIsHiddenCheckboxChange = (value: boolean) => {
-        storage.set({isHidden: value ? 'true' : 'false'}, () => {
-            setIsHidden(value);
+    const handleIsSidebarHiddenCheckboxChange = (value: boolean) => {
+        storage.set({isSidebarHidden: value ? 'true' : 'false'}, () => {
+            setIsSidebarHidden(value);
         });
     };
 
@@ -39,22 +48,34 @@ export const PopupComponent = () => {
         });
     };
 
+    const handleIsWeekendHiddenCheckboxChange = (value: boolean) => {
+        storage.set({isWeekendHidden: value ? 'true' : 'false'}, () => {
+            setIsWeekendHidden(value);
+        })
+    }
+
 
     return (
         <PopupBody>
             <BlockComponent title={'Funkcjonalności'}>
                 <FeatureComponent
                     name={'Automatyczne ukrywanie paska'}
-                    onChange={handleIsHiddenCheckboxChange}
-                    initValue={isHidden}
+                    onChange={handleIsSidebarHiddenCheckboxChange}
+                    initValue={isSidebarHidden}
                 />
-                <AutoHideSidebar isHidden={isHidden}/>
+                <AutoHideSidebar isHidden={isSidebarHidden}/>
                 <FeatureComponent
                     name={'Alternatywny wygląd kostek'}
                     onChange={handleAlternativeStyleCheckboxChange}
                     initValue={isAlternativeStyle}
                 />
                 <AlternativeStyle isAlternativeStyle={isAlternativeStyle}/>
+                <FeatureComponent
+                    name={'Ukrywanie soboty i niedzieli'}
+                    onChange={handleIsWeekendHiddenCheckboxChange}
+                    initValue={isWeekendHidden}
+                    />
+                <HideWeekendDays isHidden={isWeekendHidden}/>
             </BlockComponent>
         </PopupBody>
     );

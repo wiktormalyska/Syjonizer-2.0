@@ -52,5 +52,9 @@
 
 .alternative-style-activity-block:hover {
     z-index: 99;
-    width: 18% !important;
+    width: 250px !important;
+}
+
+.weekend-day-hidden {
+  display: none;
 }
