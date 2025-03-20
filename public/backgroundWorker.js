@@ -255,5 +255,3 @@ function weekendHiddenOff() {
         }
     }
 }
-
-//TODO: naprawic rozszerzenia na otwarcie popupa
