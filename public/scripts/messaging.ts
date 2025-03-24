@@ -2,7 +2,6 @@ import {initInjectCSS} from "./injectCss.js";
 import {hideSidebarOff, hideSidebarOn} from "./features/hideSidebar.js";
 import {alternativeStyleOff, alternativeStyleOn} from "./features/alternativeStyle.js";
 import {weekendHiddenOff, weekendHiddenOn} from "./features/hideWeekends.js";
-import MessageSender = chrome.runtime.MessageSender;
 import {Message} from "postcss";
 
 export function handleMessage(message: Message) {
