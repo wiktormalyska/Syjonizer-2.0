@@ -2,7 +2,7 @@ export function activityBlockPickingOn() {
     const activityBlocks = document.getElementsByClassName('activity_block');
     for (let i = 0; i < activityBlocks.length; i++) {
         const block = activityBlocks.item(i) as HTMLElement;
-        block.id = String(i)
+        block.id = String(i);
 
         block.addEventListener('mouseenter', () => {
             const topSection = block.querySelector('.activity_block_top');
@@ -10,7 +10,7 @@ export function activityBlockPickingOn() {
             if (checkboxContainer) {
                 checkboxContainer.style.display = 'block';
             }
-        })
+        });
 
         block.addEventListener('mouseleave', () => {
             const topSection = block.querySelector('.activity_block_top');
@@ -27,7 +27,6 @@ export function activityBlockPickingOn() {
 
         const checkboxContainer = document.createElement('div');
         checkboxContainer.classList.add('activity-checkbox-container');
-        // checkboxContainer.style.position = 'absolute';
         checkboxContainer.style.marginRight = '5px';
         checkboxContainer.style.display = 'none';
         checkboxContainer.style.zIndex = '1000';
@@ -38,22 +37,26 @@ export function activityBlockPickingOn() {
         checkbox.dataset.blockId = String(i);
 
         checkbox.addEventListener('click', (e) => {
-            console.log("block: "+i)
+            console.log("block: " + i);
             e.stopPropagation();
         });
 
         const flexContainer = document.createElement('div');
         flexContainer.style.display = 'flex';
+        flexContainer.className = 'flex-container';
+
+        flexContainer.appendChild(checkboxContainer);
+        const subject = topSection.querySelector('.subject');
+        if (subject) {
+            flexContainer.appendChild(subject);
+        }
 
         checkboxContainer.appendChild(checkbox);
 
-        flexContainer.appendChild(checkboxContainer);
 
-        while (topSection.firstChild) {
-            flexContainer.appendChild(topSection.firstChild);
-        }
-
-        topSection.appendChild(flexContainer);
+        topSection.insertBefore(flexContainer, topSection.firstChild);
+        const brElement = block.getElementsByTagName("br")[0]
+        brElement.style.display = 'none';
     }
 }
 
@@ -80,10 +83,18 @@ export function activityBlockPickingOff() {
         });
 
         const topSection = block.querySelector('.activity_block_top') as HTMLElement;
-        const checkboxContainer = topSection?.querySelector('.activity-checkbox-container');
-        if (checkboxContainer && topSection) {
-            topSection.removeChild(checkboxContainer);
+        if (!topSection) continue;
+
+        const subject = topSection!.querySelector('.subject') as HTMLElement;
+        const flexContainer = topSection!.querySelector('.flex-container') as HTMLElement;
+        flexContainer.remove();
+
+        const brElement = document.getElementsByTagName("br")[0]
+        if (brElement) {
+            brElement.style.display = 'block';
         }
+        topSection.insertBefore(subject, topSection.firstChild);
+
 
         block.removeAttribute("id");
     }
