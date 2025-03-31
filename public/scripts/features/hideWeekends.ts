@@ -9,7 +9,6 @@ export function weekendHiddenOn() {
     saturday.classList.add("weekend-day-hidden")
     sunday.classList.add("weekend-day-hidden")
 
-    // Inline implementation of resizeWeekdayHeaders
     const weekdayEntries = weekDaysContainerHeader.getElementsByClassName("weekdayentry") as HTMLCollection
     for (let i = 0; i < 5; i++) {
         const entry = weekdayEntries[i] as HTMLElement
@@ -19,11 +18,9 @@ export function weekendHiddenOn() {
         }
     }
 
-    // Inline implementation of modifyVerticalDividers
     const verticalDividers = document.getElementsByClassName("planvline") as HTMLCollection
     for (let i = 6; i < 8; i++) {
         const divider = verticalDividers[i] as HTMLElement
-         // hide is true
         divider.classList.add("weekend-day-hidden")
     }
 
@@ -38,13 +35,11 @@ export function weekendHiddenOn() {
     const fiveDayColumnWidth = 20;      // 100% / 5
     const ratio = fiveDayColumnWidth / sevenDayColumnWidth;
 
-    // Inline implementation of resizeActivityBlocks
     const activityBlocks = document.getElementsByClassName("activity_block") as HTMLCollection
 
     for (let i = 0; i < activityBlocks.length; i++) {
         const element = activityBlocks[i] as HTMLElement
 
-        // Only process elements with style properties
         if (element.style.left && element.style.width) {
             const leftStyle = parseFloat(element.style.left);
             const widthStyle = parseFloat(element.style.width);
@@ -69,7 +64,6 @@ export function weekendHiddenOff() {
     saturday.classList.remove("weekend-day-hidden")
     sunday.classList.remove("weekend-day-hidden")
 
-    // Inline implementation of resizeWeekdayHeaders
     const weekdayEntries = weekDaysContainerHeader.getElementsByClassName("weekdayentry") as HTMLCollection
     for (let i = 0; i < 5; i++) {
         const entry = weekdayEntries[i] as HTMLElement
@@ -79,7 +73,6 @@ export function weekendHiddenOff() {
         }
     }
 
-    // Inline implementation of modifyVerticalDividers
     const verticalDividers = document.getElementsByClassName("planvline") as HTMLCollection
     for (let i = 6; i < 8; i++) {
         const divider = verticalDividers[i] as HTMLElement
@@ -97,13 +90,11 @@ export function weekendHiddenOff() {
     const fiveDayColumnWidth = 20;      // 100% / 5
     const ratio = sevenDayColumnWidth / fiveDayColumnWidth;
 
-    // Inline implementation of resizeActivityBlocks
     const activityBlocks = document.getElementsByClassName("activity_block") as HTMLCollection
 
     for (let i = 0; i < activityBlocks.length; i++) {
         const element = activityBlocks[i] as HTMLElement
 
-        // Only process elements with style properties
         if (element.style.left && element.style.width) {
             const leftStyle = parseFloat(element.style.left);
             const widthStyle = parseFloat(element.style.width);

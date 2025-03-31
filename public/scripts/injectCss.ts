@@ -1,6 +1,7 @@
 import {hideSidebarOn} from "./features/hideSidebar";
 import {alternativeStyleOn} from "./features/alternativeStyle";
 import {weekendHiddenOn} from "./features/hideWeekends";
+import {activityBlockPickingOn} from "./features/activityBlockPicking";
 
 export function initInjectCSS(tabId: number) {
     if (!tabId) return
@@ -9,7 +10,7 @@ export function initInjectCSS(tabId: number) {
         target: {tabId: tabId},
         files: ["customStyles.css"]
     }).catch(err => console.error("Błąd w insertCSS:", err))
-
+    checkAndTurnActivityBlockPicking(tabId);
     checkAndHideSidebar(tabId);
     checkAndTurnAlternativeStyle(tabId);
     checkAndTurnHideWeekend(tabId);
@@ -46,6 +47,18 @@ function checkAndTurnHideWeekend(tabId: number) {
             chrome.scripting.executeScript({
                 target: {tabId: tabId},
                 func: weekendHiddenOn
+            }).catch(err => console.error("Błąd w executeScript:", err));
+        }
+    })
+}
+
+function checkAndTurnActivityBlockPicking(tabId: number) {
+    chrome.storage.local.get("isPickingActivityBlocks", (data) => {
+        if (data.isPickingActivityBlocks === "true") {
+            console.log("ActivityBlocks jest włączony");
+            chrome.scripting.executeScript({
+                target: {tabId: tabId},
+                func: activityBlockPickingOn
             }).catch(err => console.error("Błąd w executeScript:", err));
         }
     })

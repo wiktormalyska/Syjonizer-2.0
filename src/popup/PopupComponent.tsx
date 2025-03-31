@@ -6,11 +6,14 @@ import {PopupBody} from "./components/PopupBody.tsx";
 import storage from "../helpers/storage.tsx";
 import {AlternativeStyle} from "../functions/AlternativeStyle.tsx";
 import {HideWeekendDays} from "../functions/HideWeekendDays.tsx";
+import {ActivityBlockPicking} from "../functions/ActivityBlockPicking.tsx";
 
 export const PopupComponent = () => {
     const [isSidebarHidden, setIsSidebarHidden] = useState<boolean | null>(null);
     const [isAlternativeStyle, setIsAlternativeStyle] = useState<boolean | null>(null);
     const [isWeekendHidden, setIsWeekendHidden] = useState<boolean | null>(null);
+    const [isPickingActivityBlocks, setIsPickingActivityBlocks] = useState<boolean | null>(null);
+
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     // Ładowanie danych z localStorage
@@ -39,7 +42,15 @@ export const PopupComponent = () => {
             }
         });
 
-        setIsLoading(false); // Po załadowaniu ustawiamy loading na false
+        storage.get('isPickingActivityBlocks', (data) => {
+            if (data.isPickingActivityBlocks === "true") {
+                setIsPickingActivityBlocks(true);
+            } else {
+                setIsPickingActivityBlocks(false);
+            }
+        })
+
+        setIsLoading(false);
     }, []);
 
     const handleIsSidebarHiddenCheckboxChange = (value: boolean) => {
@@ -69,8 +80,17 @@ export const PopupComponent = () => {
         }
     };
 
+    const handleHidingAndPickingActivityBlocks = (value: boolean) => {
+        if (isPickingActivityBlocks !== null) {
+            storage.set({ isPickingActivityBlocks: value ? 'true' : 'false' }, () => {
+                setIsPickingActivityBlocks(value);
+                ActivityBlockPicking(value);
+            })
+        }
+    }
+
     if (isLoading) {
-        return <div>Loading...</div>; // Możesz dodać wskaźnik ładowania
+        return <div>Loading...</div>;
     }
 
     return (
@@ -91,6 +111,10 @@ export const PopupComponent = () => {
                     onChange={handleIsWeekendHiddenCheckboxChange}
                     initValue={isWeekendHidden ?? false}
                 />
+                <FeatureComponent
+                    name={'Wybieranie i ukrywanie niezaznaczonych zajęć'}
+                    onChange={handleHidingAndPickingActivityBlocks}
+                    initValue={isPickingActivityBlocks ?? false} />
             </BlockComponent>
         </PopupBody>
     );

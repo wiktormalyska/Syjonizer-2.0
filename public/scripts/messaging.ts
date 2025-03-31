@@ -3,6 +3,7 @@ import {hideSidebarOff, hideSidebarOn} from "./features/hideSidebar.js";
 import {alternativeStyleOff, alternativeStyleOn} from "./features/alternativeStyle.js";
 import {weekendHiddenOff, weekendHiddenOn} from "./features/hideWeekends.js";
 import {Message} from "postcss";
+import {activityBlockPickingOff, activityBlockPickingOn} from "./features/activityBlockPicking";
 
 export function handleMessage(message: Message) {
     switch (message.action) {
@@ -34,6 +35,12 @@ export function handleMessage(message: Message) {
 
         case 'hideWeekendDaysOff':
             executeScript(weekendHiddenOff)
+            break
+        case 'activityBlockPickingActiveOn':
+            executeScript(activityBlockPickingOn)
+            break
+        case 'activityBlockPickingActiveOff':
+            executeScript(activityBlockPickingOff)
             break
     }
 
