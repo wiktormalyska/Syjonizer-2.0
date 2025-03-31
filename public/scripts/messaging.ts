@@ -4,6 +4,7 @@ import {alternativeStyleOff, alternativeStyleOn} from "./features/alternativeSty
 import {weekendHiddenOff, weekendHiddenOn} from "./features/hideWeekends.js";
 import {Message} from "postcss";
 import {activityBlockPickingOff, activityBlockPickingOn} from "./features/activityBlockPicking";
+import {showOnlySelectedBlocksOff, showOnlySelectedBlocksOn} from "./features/showOnlySelectedBlocks";
 
 export function handleMessage(message: Message) {
     switch (message.action) {
@@ -41,6 +42,12 @@ export function handleMessage(message: Message) {
             break
         case 'activityBlockPickingActiveOff':
             executeScript(activityBlockPickingOff)
+            break
+        case 'showOnlySelectedBlocksOn':
+            executeScript(showOnlySelectedBlocksOn)
+            break
+        case 'showOnlySelectedBlocksOff':
+            executeScript(showOnlySelectedBlocksOff)
             break
     }
 

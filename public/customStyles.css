@@ -27,7 +27,7 @@
 }
 
 .alternative-style-activity-block {
-    transition: width 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 
     .activity_group {
         color: rgba(255, 255, 255, 0.9);

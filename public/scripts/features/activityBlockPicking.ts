@@ -1,10 +1,12 @@
 export function activityBlockPickingOn() {
     const activityBlocks = document.getElementsByClassName('activity_block');
+    let selectedBlocks = JSON.parse(localStorage.getItem('selectedBlocks') || '[]');
+
     for (let i = 0; i < activityBlocks.length; i++) {
         const block = activityBlocks.item(i) as HTMLElement;
         block.id = String(i);
 
-        block.addEventListener('mouseenter', () => {
+        block.addEventListener('pointerenter', () => {
             const topSection = block.querySelector('.activity_block_top');
             const checkboxContainer = topSection?.querySelector('.activity-checkbox-container') as HTMLElement;
             if (checkboxContainer) {
@@ -12,7 +14,7 @@ export function activityBlockPickingOn() {
             }
         });
 
-        block.addEventListener('mouseleave', () => {
+        block.addEventListener('pointerleave', () => {
             const topSection = block.querySelector('.activity_block_top');
             const checkboxContainer = topSection?.querySelector('.activity-checkbox-container') as HTMLElement;
             const checkbox = checkboxContainer?.querySelector('.activity-checkbox') as HTMLInputElement;
@@ -36,9 +38,23 @@ export function activityBlockPickingOn() {
         checkbox.className = 'activity-checkbox';
         checkbox.dataset.blockId = String(i);
 
-        checkbox.addEventListener('click', (e) => {
-            console.log("block: " + i);
-            e.stopPropagation();
+        if (selectedBlocks.includes(String(i))) {
+            checkbox.checked = true;
+            checkboxContainer.style.display = 'block';
+        }
+
+        checkbox.addEventListener('click', () => {
+            const blockId = block.id
+
+            if (checkbox.checked) {
+                if (!selectedBlocks.includes(blockId)) {
+                    selectedBlocks.push(blockId);
+                }
+            } else {
+                selectedBlocks = selectedBlocks.filter((id: string) => id !== blockId);
+            }
+
+            localStorage.setItem('selectedBlocks', JSON.stringify(selectedBlocks));
         });
 
         const flexContainer = document.createElement('div');
@@ -65,20 +81,26 @@ export function activityBlockPickingOff() {
     for (let i = 0; i < activityBlocks.length; i++) {
         const block = activityBlocks.item(i) as HTMLElement;
 
-        block.removeEventListener('mouseenter', () => {
+        block.removeEventListener('pointerenter', () => {
             const topSection = block.querySelector('.activity_block_top');
             const checkboxContainer = topSection?.querySelector('.activity-checkbox-container') as HTMLElement;
             if (checkboxContainer) {
                 checkboxContainer.style.display = 'block';
             }
         });
-        block.removeEventListener('mouseleave', () => {
+        block.removeEventListener('pointerleave', () => {
             const topSection = block.querySelector('.activity_block_top');
             const checkboxContainer = topSection?.querySelector('.activity-checkbox-container') as HTMLElement;
             const checkbox = checkboxContainer?.querySelector('.activity-checkbox') as HTMLInputElement;
 
             if (checkboxContainer && !checkbox.checked) {
                 checkboxContainer.style.display = 'none';
+            }
+        });
+
+        chrome.storage.local.get("isAlternativeStyle", (data) => {
+            if (data.isAlternativeStyle === "true") {
+                block.classList.add('alternative-style-activity-block');
             }
         });
 

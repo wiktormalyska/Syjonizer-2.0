@@ -50,6 +50,20 @@ export function weekendHiddenOn() {
             element.style.width = (widthStyle * ratio) + "%";
         }
     }
+    const selectedBlocks = JSON.parse(localStorage.getItem('selectedBlocks') || '[]');
+    const blockData = [];
+    for (let i = 0; i < activityBlocks.length; i++) {
+        if (selectedBlocks.includes(String(i))) {
+            const block = activityBlocks.item(i) as HTMLElement;
+
+            blockData.push({
+                id: i,
+                left: block.style.left,
+                width: block.style.width,
+            })
+        }
+        localStorage.setItem('blockData', JSON.stringify(blockData));
+    }
 }
 
 export function weekendHiddenOff() {
@@ -81,7 +95,6 @@ export function weekendHiddenOff() {
 
     for (let i = 0; i < 6; i++) {
         const divider = verticalDividers[i] as HTMLElement
-        console.log(divider)
         divider.removeAttribute("style")
         divider.style.left = (i * percentage) + "%";
     }
@@ -104,5 +117,19 @@ export function weekendHiddenOff() {
             }
             element.style.width = (widthStyle * ratio) + "%";
         }
+    }
+    const selectedBlocks = JSON.parse(localStorage.getItem('selectedBlocks') || '[]');
+    const blockData = [];
+    for (let i = 0; i < activityBlocks.length; i++) {
+        if (selectedBlocks.includes(String(i))) {
+            const block = activityBlocks.item(i) as HTMLElement;
+
+            blockData.push({
+                id: i,
+                left: block.style.left,
+                width: block.style.width,
+            })
+        }
+        localStorage.setItem('blockData', JSON.stringify(blockData));
     }
 }
