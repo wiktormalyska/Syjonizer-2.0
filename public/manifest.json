@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Syjonizer 2.0",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Remaster Syjonizera do Morii UMCS",
   "action": {
     "default_popup": "index-prod.html"
@@ -20,7 +20,7 @@
     "http://moria.umcs.lublin.pl/*"
   ],
   "background": {
-    "service_worker": "backgroundWorker.js"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -31,7 +31,7 @@
         "customStyles.css"
       ],
       "js": [
-        "autoInjectCss.js"
+        "scripts/autoInjectCss.js"
       ]
     }
   ]

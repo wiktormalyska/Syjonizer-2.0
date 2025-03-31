@@ -1,34 +1,50 @@
 import {useEffect, useState} from "react";
 import * as React from "react";
+import {FaCheck, FaXmark} from "react-icons/fa6";
 
 interface FeatureComponentProps {
     name: string,
     onChange: (value: boolean) => void
     initValue: boolean
+    children?: React.ReactNode
 }
 
-export const FeatureComponent = ({name, onChange, initValue}: FeatureComponentProps) => {
+export const FeatureComponent = ({name, onChange, initValue, children}: FeatureComponentProps) => {
     const [isChecked, setIsChecked] = useState(initValue);
 
     useEffect(() => {
         setIsChecked(initValue);
     }, [initValue]);
 
-    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.checked;
-        setIsChecked(value);
-        onChange(value);
+    const handleCheckboxChange = () => {
+        setIsChecked(!isChecked);
+        onChange(!isChecked);
     };
 
     return (
-        <div className="flex items-center">
-            <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-                className="peer checkbox w-4 h-4 mr-2 accent-background bg-background peer-checked:bg-background"
-            />
-            <span className={"text-xs font-medium"}>{name}</span>
-        </div>
-    );
+        <>
+            <div className="flex flex-col bg-primary/70 p-2 rounded-md"
+                 onClick={handleCheckboxChange}>
+                <div className="flex items-center">
+                    <div>
+                        <button
+                            className={"w-5 h-5 p-1 mr-1 " +
+                                "bg-background " +
+                                "rounded-full flex items-center " +
+                                "justify-center text-text"}
+                        >
+                            {isChecked ? <FaCheck/> : <FaXmark/>}
+                        </button>
+                    </div>
+                    <span className={"text-base font-medium text-left"}>{name}</span>
+
+
+                </div>
+                <div className="w-full">
+                    {children}
+                </div>
+            </div>
+        </>
+    )
+        ;
 };
