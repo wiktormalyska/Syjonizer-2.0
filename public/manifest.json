@@ -20,7 +20,7 @@
     "http://moria.umcs.lublin.pl/*"
   ],
   "background": {
-    "service_worker": "backgroundWorker.js"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -31,7 +31,7 @@
         "customStyles.css"
       ],
       "js": [
-        "autoInjectCss.js"
+        "scripts/autoInjectCss.js"
       ]
     }
   ]

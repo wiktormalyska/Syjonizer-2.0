@@ -1,7 +1,29 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "outDir": "./dist",
+    "strict": true,
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "public/**/*.ts",
+    "public/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
