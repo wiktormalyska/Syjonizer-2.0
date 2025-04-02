@@ -6,6 +6,15 @@ export function activityBlockPickingOn() {
         const block = activityBlocks.item(i) as HTMLElement;
         block.id = String(i);
 
+        const label = document.createElement('label');
+        label.style.display = 'block';
+        label.style.width = '100%';
+        label.style.cursor = 'pointer';
+        label.style.zIndex = '10000';
+
+        block.parentNode?.insertBefore(label, block);
+        label.appendChild(block);
+
         block.addEventListener('pointerenter', () => {
             const topSection = block.querySelector('.activity_block_top');
             const checkboxContainer = topSection?.querySelector('.activity-checkbox-container') as HTMLElement;
@@ -31,7 +40,6 @@ export function activityBlockPickingOn() {
         checkboxContainer.classList.add('activity-checkbox-container');
         checkboxContainer.style.marginRight = '5px';
         checkboxContainer.style.display = 'none';
-        checkboxContainer.style.zIndex = '1000';
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -56,19 +64,13 @@ export function activityBlockPickingOn() {
 
             localStorage.setItem('selectedBlocks', JSON.stringify(selectedBlocks));
         });
+        checkboxContainer.appendChild(checkbox);
 
         const flexContainer = document.createElement('div');
         flexContainer.style.display = 'flex';
-        flexContainer.className = 'flex-container';
 
         flexContainer.appendChild(checkboxContainer);
-        const subject = topSection.querySelector('.subject');
-        if (subject) {
-            flexContainer.appendChild(subject);
-        }
-
-        checkboxContainer.appendChild(checkbox);
-
+        flexContainer.appendChild(topSection.querySelector('.subject') as HTMLElement);
 
         topSection.insertBefore(flexContainer, topSection.firstChild);
         const brElement = block.getElementsByTagName("br")[0]
