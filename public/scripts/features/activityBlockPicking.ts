@@ -68,6 +68,7 @@ export function activityBlockPickingOn() {
 
         const flexContainer = document.createElement('div');
         flexContainer.style.display = 'flex';
+        flexContainer.className = 'flex-container'
 
         flexContainer.appendChild(checkboxContainer);
         flexContainer.appendChild(topSection.querySelector('.subject') as HTMLElement);
@@ -121,5 +122,16 @@ export function activityBlockPickingOff() {
 
 
         block.removeAttribute("id");
+
+        const plancontainer = document.getElementsByClassName('plancontainer')[0]
+        const labels = plancontainer.getElementsByTagName("label");
+        console.log(plancontainer);
+        while (labels.length > 0) {
+            const label = labels[0];
+            while (label.firstChild) {
+                plancontainer.appendChild(label.firstChild);
+            }
+            label.remove();
+        }
     }
 }
