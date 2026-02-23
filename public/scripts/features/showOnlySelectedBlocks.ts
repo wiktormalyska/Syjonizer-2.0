@@ -1,12 +1,22 @@
 export function showOnlySelectedBlocksOn() {
-    const selectedBlocks = JSON.parse(localStorage.getItem('selectedBlocks') || '[]');
+    function getPageCode(): string {
+        const urlParts = window.location.pathname.split('/').filter(Boolean);
+        return urlParts.pop() || 'default';
+    }
+
+    const pageCode = getPageCode();
+    const selectedBlocksKey = `selectedBlocks_${pageCode}`;
+    const blockDataKey = `blockData_${pageCode}`;
+
+    const selectedBlocks = JSON.parse(localStorage.getItem(selectedBlocksKey) || '[]');
     const blockData = [];
 
-    const activityBlocks = document.getElementsByClassName("activity_block") as HTMLCollection
+    const activityBlocks = document.getElementsByClassName("activity_block") as HTMLCollection;
+
     for (let i = 0; i < activityBlocks.length; i++) {
-        const element = activityBlocks[i] as HTMLElement
+        const element = activityBlocks[i] as HTMLElement;
         element.style.transition = 'all 0.2s';
-        const checkbox = element.querySelector('.activity-checkbox') as HTMLInputElement;
+        const checkbox = element.querySelector('.activity-checkbox') as HTMLInputElement | null;
 
         if (selectedBlocks.includes(String(i))) {
             const block = activityBlocks.item(i) as HTMLElement;
@@ -15,40 +25,48 @@ export function showOnlySelectedBlocksOn() {
                 id: i,
                 left: block.style.left,
                 width: block.style.width,
-            })
-
+            });
 
             chrome.storage.local.get("isWeekendHidden", (data) => {
                 if (data.isWeekendHidden === "true") {
-                    element.style.width = '20%'
+                    element.style.width = '20%';
                     const leftValue = parseFloat(element.style.left);
                     element.style.left = `${Math.floor(leftValue / 20) * 20}%`;
                 } else {
-                    element.style.width = '14.2857%'
+                    element.style.width = '14.2857%';
                     const leftValue = parseFloat(element.style.left);
                     element.style.left = `${Math.floor(leftValue / 14.2857) * 14.2857}%`;
                 }
             });
+
             if (checkbox) {
                 checkbox.disabled = true;
             }
-            continue
+            continue;
         }
-        element.style.opacity = '0';
 
-        localStorage.setItem('blockData', JSON.stringify(blockData));
+        element.style.opacity = '0';
     }
 
-
+    localStorage.setItem(blockDataKey, JSON.stringify(blockData));
 }
 
 export function showOnlySelectedBlocksOff() {
-    const blockData = JSON.parse(localStorage.getItem('blockData') || '[]');
+    function getPageCode(): string {
+        const urlParts = window.location.pathname.split('/').filter(Boolean);
+        return urlParts.pop() || 'default';
+    }
 
-    const activityBlocks = document.getElementsByClassName("activity_block") as HTMLCollection
+    const pageCode = getPageCode();
+    const blockDataKey = `blockData_${pageCode}`;
+
+    const blockData = JSON.parse(localStorage.getItem(blockDataKey) || '[]');
+
+    const activityBlocks = document.getElementsByClassName("activity_block") as HTMLCollection;
+
     for (let i = 0; i < activityBlocks.length; i++) {
-        const element = activityBlocks[i] as HTMLElement
-        const checkbox = element.querySelector('.activity-checkbox') as HTMLInputElement;
+        const element = activityBlocks[i] as HTMLElement;
+        const checkbox = element.querySelector('.activity-checkbox') as HTMLInputElement | null;
 
         const data = blockData.find((block: { id: number, left: string, width: string }) => block.id === i);
 
@@ -64,6 +82,4 @@ export function showOnlySelectedBlocksOff() {
         element.style.transition = 'all 0.2s';
         element.style.opacity = '1';
     }
-
-
 }
