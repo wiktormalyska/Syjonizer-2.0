@@ -5,11 +5,9 @@ export function activityBlockPickingOn() {
     }
 
     const pageCode = getPageCode();
-    // Dynamiczny klucz dla konkretnego URL
     const selectedBlocksKey = `selectedBlocks_${pageCode}`;
 
     const activityBlocks = document.getElementsByClassName('activity_block');
-    // Pobieranie danych ze zaktualizowanego klucza
     let selectedBlocks = JSON.parse(localStorage.getItem(selectedBlocksKey) || '[]');
 
     for (let i = 0; i < activityBlocks.length; i++) {
@@ -72,14 +70,12 @@ export function activityBlockPickingOn() {
                 selectedBlocks = selectedBlocks.filter((id: string) => id !== blockId);
             }
 
-            // Zapis do zaktualizowanego klucza
             localStorage.setItem(selectedBlocksKey, JSON.stringify(selectedBlocks));
         });
 
         checkboxContainer.appendChild(checkbox);
 
         const flexContainer = document.createElement('div');
-        // DODANO KLASĘ, by móc usunąć ten element w funkcji Off
         flexContainer.classList.add('activity-flex-container');
         flexContainer.style.display = 'flex';
 
@@ -111,7 +107,6 @@ export function activityBlockPickingOff() {
         const topSection = block.querySelector('.activity_block_top') as HTMLElement;
         if (!topSection) continue;
 
-        // POPRAWKA DOM: Szukanie po właściwej klasie i bezpieczne wyciąganie elementu .subject
         const flexContainer = topSection.querySelector('.activity-flex-container') as HTMLElement;
         if (flexContainer) {
             const subject = flexContainer.querySelector('.subject') as HTMLElement;
