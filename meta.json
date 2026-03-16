@@ -3,7 +3,7 @@
   "description": "Tool for UMCS Moria Schedule Website",
   "imageUrl": "https://github.com/wiktormalyska/Syjonizer-2.0/raw/master/assets/logo.png?raw=true",
   "technologies": [
-    "TailwindCss",
+    "Tailwind Css",
     "React",
     "TypeScript"
   ],
