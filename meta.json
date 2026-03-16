@@ -1,0 +1,11 @@
+{
+  "name": "Syjonizer 2.0",
+  "description": "Tool for UMCS Moria Schedule Website",
+  "imageUrl": "https://github.com/wiktormalyska/Syjonizer-2.0/raw/master/assets/logo.png?raw=true",
+  "technologies": [
+    "TailwindCss",
+    "React",
+    "TypeScript"
+  ],
+  "websiteUrl": "https://chromewebstore.google.com/detail/fndnpjjlnainccfgfanlgmeppnpajinp?utm_source=item-share-cb"
+}
